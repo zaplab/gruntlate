@@ -91,7 +91,8 @@ module.exports = function(grunt) {
             options: {
                 banner: '<%= banner %>',
                 style: 'expanded',
-                compass: true
+                compass: true,
+                bundleExec: true
             },
             dist: {
                 files: {
