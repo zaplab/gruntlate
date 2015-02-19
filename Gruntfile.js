@@ -10,7 +10,7 @@ module.exports = function(grunt) {
         ' Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (<%= pkg.author.url %>)\n' +
         ' All rights reserved.\n' +
         ' <%= pkg.description %>\n' +
-        '*/\n',
+        '*/',
 
         clean: {
             start: ['tmp'],
@@ -20,7 +20,9 @@ module.exports = function(grunt) {
 
         concat: {
             options: {
-                stripBanners: false
+                banner: '<%= banner %>',
+                sourceMap: true,
+                stripBanners: true
             },
             js: {
                 src: [
@@ -52,6 +54,17 @@ module.exports = function(grunt) {
                 nonull: true,
                 src: ['dist/js/main.js'],
                 dest: 'tests/dist/js/main.js'
+            }
+        },
+
+        header: {
+            cssDist: {
+                options: {
+                    text: '<%= banner %>'
+                },
+                files: {
+                    'dist/css/main.min.css': 'dist/css/main.min.css'
+                }
             }
         },
 
@@ -91,10 +104,9 @@ module.exports = function(grunt) {
 
         sass: {
             options: {
-                banner: '<%= banner %>',
-                style: 'expanded',
-                compass: true,
-                bundleExec: true
+                // TODO: ['expanded' and 'compact' are not currently supported by libsass]
+                outputStyle: 'expanded',
+                sourceMap: true
             },
             dist: {
                 files: {
@@ -137,10 +149,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-header');
     grunt.loadNpmTasks('grunt-mocha');
+    grunt.loadNpmTasks('grunt-sass');
 
     // Testing
     grunt.registerTask('test-css', ['csslint:dist']);
@@ -148,7 +161,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['test-css', 'test-js']);
 
     // CSS
-    grunt.registerTask('css', ['sass:dist', 'test-css', 'cssmin:dist']);
+    grunt.registerTask('css', ['sass:dist', 'test-css', 'cssmin:dist', 'header:cssDist']);
 
     // JS
     grunt.registerTask('js', ['concat:js', 'test-js', 'uglify']);
