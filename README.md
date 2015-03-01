@@ -8,7 +8,6 @@ Basic Grunt Template
 ```
 $ npm install
 $ bower install
-$ bundle install
 ```
 
 ## Usage
@@ -16,4 +15,10 @@ $ bundle install
 ```
 $ grunt
 $ grunt watch
+```
+
+### If we take use of isDevMode inside Gruntfile.js
+
+```
+$ grunt --target=live
 ```

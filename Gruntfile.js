@@ -3,6 +3,21 @@ module.exports = function(grunt) {
 
     require('time-grunt')(grunt);
 
+    var isDevMode,
+        target = grunt.option('target');
+
+    switch (target) {
+        case 'live':
+            /* falls through */
+        case 'staging':
+            isDevMode = false;
+            break;
+        case 'dev':
+            /* falls through */
+        default:
+            isDevMode = true;
+    }
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         banner: '/*!\n' +
@@ -21,7 +36,7 @@ module.exports = function(grunt) {
         concat: {
             options: {
                 banner: '<%= banner %>',
-                sourceMap: true,
+                sourceMap: isDevMode,
                 stripBanners: true
             },
             js: {
@@ -60,7 +75,7 @@ module.exports = function(grunt) {
         header: {
             cssDist: {
                 options: {
-                    text: '<%= banner %>'
+                    text: isDevMode ? '<%= banner %>' : ''
                 },
                 files: {
                     'dist/css/main.min.css': 'dist/css/main.min.css'
@@ -105,8 +120,8 @@ module.exports = function(grunt) {
         sass: {
             options: {
                 // TODO: ['expanded' and 'compact' are not currently supported by libsass]
-                outputStyle: 'expanded',
-                sourceMap: true
+                outputStyle: isDevMode ? 'expanded' : 'compressed',
+                sourceMap: isDevMode
             },
             dist: {
                 files: {
