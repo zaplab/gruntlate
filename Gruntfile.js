@@ -86,7 +86,7 @@ module.exports = function(grunt) {
         header: {
             cssDist: {
                 options: {
-                    text: isDevMode ? '<%= banner %>' : ''
+                    text: isDevMode ? '' : '<%= banner %>'
                 },
                 files: {
                     'dist/css/main.min.css': 'dist/css/main.min.css'
