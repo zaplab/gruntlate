@@ -6,7 +6,9 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
     var isDevMode,
-        target = grunt.option('target');
+        target = grunt.option('target'),
+        cssTask,
+        jsTask;
 
     switch (target) {
         case 'live':
@@ -66,7 +68,7 @@ module.exports = function(grunt) {
         cssmin: {
             dist: {
                 files: {
-                    'dist/css/main.min.css': [
+                    'dist/css/main.css': [
                         'dist/css/main.css'
                     ]
                 }
@@ -89,7 +91,7 @@ module.exports = function(grunt) {
                     text: isDevMode ? '' : '<%= banner %>'
                 },
                 files: {
-                    'dist/css/main.min.css': 'dist/css/main.min.css'
+                    'dist/css/main.css': 'dist/css/main.css'
                 }
             }
         },
@@ -130,7 +132,7 @@ module.exports = function(grunt) {
                 src: [
                     '<%= concat.js.dest %>'
                 ],
-                dest: 'dist/js/main.min.js'
+                dest: 'dist/js/main.js'
             }
         },
 
@@ -205,20 +207,31 @@ module.exports = function(grunt) {
         'test-js'
     ]);
 
-    // CSS
-    grunt.registerTask('css', [
+    cssTask = [
         'sass:dist',
-        'test-css',
-        'cssmin:dist',
-        'header:cssDist'
-    ]);
+        'test-css'
+    ];
+
+    if (!isDevMode) {
+        cssTask.push('cssmin:dist');
+    }
+
+    cssTask.push('header:cssDist');
+
+    // CSS
+    grunt.registerTask('css', cssTask);
+
+    jsTask = [
+        'concat:js',
+        'test-js'
+    ];
+
+    if (!isDevMode) {
+        jsTask.push('uglify');
+    }
 
     // JS
-    grunt.registerTask('js', [
-        'concat:js',
-        'test-js',
-        'uglify'
-    ]);
+    grunt.registerTask('js', jsTask);
 
     // Images
     grunt.registerTask('images', [
