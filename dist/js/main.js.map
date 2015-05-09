@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/js/main.js"],"names":[],"mappings":";;;;;EAAA;AACA,OAAO,CAAC,GAAG,EAAE,SAAS","file":"main.js","sourcesContent":["\nconsole.log('gruntlate');\n"]}
