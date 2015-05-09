@@ -24,6 +24,7 @@
         "grunt-header": "~1.0.0",
         "grunt-mocha": "~0.4.11",
         "grunt-sass": "~0.18.0",
+        "load-grunt-tasks": "~0.6.0",
         "time-grunt": "~1.0.0"
     }
 }
