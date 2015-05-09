@@ -1,3 +1,4 @@
+
 module.exports = function(grunt) {
     'use strict';
 
@@ -20,6 +21,7 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
         banner: '/*!\n' +
         ' <%= pkg.name %> <%= pkg.version %>\n' +
         ' Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (<%= pkg.author.url %>)\n' +
@@ -28,9 +30,11 @@ module.exports = function(grunt) {
         '*/',
 
         clean: {
-            start: ['tmp'],
-            dist: ['dist'],
-            end: ['tmp']
+            start: [],
+            dist: [
+                'dist'
+            ],
+            end: []
         },
 
         concat: {
@@ -52,14 +56,18 @@ module.exports = function(grunt) {
                 options: {
                     csslintrc: 'tests/.csslintrc'
                 },
-                src: ['dist/css/main.css']
+                src: [
+                    'dist/css/main.css'
+                ]
             }
         },
 
         cssmin: {
             dist: {
                 files: {
-                    'dist/css/main.min.css': ['dist/css/main.css']
+                    'dist/css/main.min.css': [
+                        'dist/css/main.css'
+                    ]
                 }
             }
         },
@@ -67,7 +75,9 @@ module.exports = function(grunt) {
         copy: {
             testDist: {
                 nonull: true,
-                src: ['dist/js/main.js'],
+                src: [
+                    'dist/js/main.js'
+                ],
                 dest: 'tests/dist/js/main.js'
             }
         },
@@ -91,7 +101,9 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/img/',
-                    src: ['**/*.{png,jpg,gif}'],
+                    src: [
+                        '**/*.{png,jpg,gif}'
+                    ],
                     dest: 'dist/img/'
                 }]
             }
@@ -102,7 +114,9 @@ module.exports = function(grunt) {
                 jshintrc: 'tests/.jshintrc'
             },
             dist: {
-                src: ['src/js/*.js']
+                src: [
+                    'src/js/*.js'
+                ]
             }
         },
 
@@ -112,7 +126,9 @@ module.exports = function(grunt) {
                 report: 'min'
             },
             dist: {
-                src: ['<%= concat.js.dest %>'],
+                src: [
+                    '<%= concat.js.dest %>'
+                ],
                 dest: 'dist/js/main.min.js'
             }
         },
@@ -135,24 +151,41 @@ module.exports = function(grunt) {
                 run: true
             },
             dist: {
-                src: ['tests/dist.html']
+                src: [
+                    'tests/dist.html'
+                ]
             }
         },
 
         watch: {
             css: {
-                files: ['src/css/**'],
-                tasks: ['clean:start', 'css', 'clean:end']
+                files: [
+                    'src/css/**'
+                ],
+                tasks: [
+                    'clean:start',
+                    'css',
+                    'clean:end'
+                ]
             },
             js: {
-                files: ['src/js/**'],
-                tasks: ['clean:start', 'js', 'clean:end']
+                files: [
+                    'src/js/**'
+                ],
+                tasks: [
+                    'clean:start',
+                    'js',
+                    'clean:end'
+                ]
             },
             livereload: {
                 options: {
                     livereload: 1337
                 },
-                files: ['dist/css/main.css', 'dist/js/main.js']
+                files: [
+                    'dist/css/main.css',
+                    'dist/js/main.js'
+                ]
             }
         }
     });
@@ -171,19 +204,46 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-sass');
 
     // Testing
-    grunt.registerTask('test-css', ['csslint:dist']);
-    grunt.registerTask('test-js', ['jshint:dist', 'copy:testDist', 'mocha:dist']);
-    grunt.registerTask('test', ['test-css', 'test-js']);
+    grunt.registerTask('test-css', [
+        'csslint:dist'
+    ]);
+    grunt.registerTask('test-js', [
+        'jshint:dist',
+        'copy:testDist',
+        'mocha:dist'
+    ]);
+    grunt.registerTask('test', [
+        'test-css',
+        'test-js'
+    ]);
 
     // CSS
-    grunt.registerTask('css', ['sass:dist', 'test-css', 'cssmin:dist', 'header:cssDist']);
+    grunt.registerTask('css', [
+        'sass:dist',
+        'test-css',
+        'cssmin:dist',
+        'header:cssDist'
+    ]);
 
     // JS
-    grunt.registerTask('js', ['concat:js', 'test-js', 'uglify']);
+    grunt.registerTask('js', [
+        'concat:js',
+        'test-js',
+        'uglify'
+    ]);
 
     // Images
-    grunt.registerTask('images', ['imagemin:dist']);
+    grunt.registerTask('images', [
+        'imagemin:dist'
+    ]);
 
     // Default task
-    grunt.registerTask('default', ['clean:start', 'clean:dist', 'css', 'js', 'images', 'clean:end']);
+    grunt.registerTask('default', [
+        'clean:start',
+        'clean:dist',
+        'css',
+        'js',
+        'images',
+        'clean:end'
+    ]);
 };
