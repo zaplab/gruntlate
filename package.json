@@ -3,9 +3,9 @@
     "version": "0.0.0",
     "description": "Basic Grunt Template",
     "author": {
-        "name" : "Sebastian Herber",
-        "email" : "herber@zaplab.at",
-        "url" : "http://www.zaplab.at"
+        "name" : "Author Name",
+        "email" : "author@email",
+        "url" : "http://www.author.url"
     },
     "private": true,
     "devDependencies": {
