@@ -35,7 +35,9 @@ module.exports = function(grunt) {
         clean: {
             start: [],
             dist: [
-                'dist'
+                'dist/css',
+                'dist/img',
+                'dist/js'
             ],
             end: []
         },
