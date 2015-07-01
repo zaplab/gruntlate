@@ -1,26 +1,56 @@
+
 module.exports = function(grunt) {
     'use strict';
 
     require('time-grunt')(grunt);
+    require('load-grunt-tasks')(grunt);
+
+    var isDevMode,
+        target = grunt.option('target'),
+        cssTask,
+        jsTask;
+
+    switch (target) {
+        case 'prod':
+            /* falls through */
+        case 'production':
+            /* falls through */
+        case 'staging':
+            isDevMode = false;
+            break;
+        case 'dev':
+            /* falls through */
+        case 'development':
+            /* falls through */
+        default:
+            isDevMode = true;
+    }
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
         banner: '/*!\n' +
         ' <%= pkg.name %> <%= pkg.version %>\n' +
         ' Copyright <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (<%= pkg.author.url %>)\n' +
         ' All rights reserved.\n' +
         ' <%= pkg.description %>\n' +
-        '*/\n',
+        '*/',
 
         clean: {
-            start: ['tmp'],
-            dist: ['dist'],
-            end: ['tmp']
+            start: [],
+            dist: [
+                'dist/css',
+                'dist/img',
+                'dist/js'
+            ],
+            end: []
         },
 
         concat: {
             options: {
-                stripBanners: false
+                banner: '<%= banner %>',
+                sourceMap: isDevMode,
+                stripBanners: true
             },
             js: {
                 src: [
@@ -35,14 +65,18 @@ module.exports = function(grunt) {
                 options: {
                     csslintrc: 'tests/.csslintrc'
                 },
-                src: ['dist/css/main.css']
+                src: [
+                    'dist/css/main.css'
+                ]
             }
         },
 
         cssmin: {
             dist: {
                 files: {
-                    'dist/css/main.min.css': ['dist/css/main.css']
+                    'dist/css/main.css': [
+                        'dist/css/main.css'
+                    ]
                 }
             }
         },
@@ -50,8 +84,21 @@ module.exports = function(grunt) {
         copy: {
             testDist: {
                 nonull: true,
-                src: ['dist/js/main.js'],
+                src: [
+                    'dist/js/main.js'
+                ],
                 dest: 'tests/dist/js/main.js'
+            }
+        },
+
+        header: {
+            cssDist: {
+                options: {
+                    text: isDevMode ? '' : '<%= banner %>'
+                },
+                files: {
+                    'dist/css/main.css': 'dist/css/main.css'
+                }
             }
         },
 
@@ -63,7 +110,9 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/img/',
-                    src: ['**/*.{png,jpg,gif}'],
+                    src: [
+                        '**/*.{png,jpg,gif}'
+                    ],
                     dest: 'dist/img/'
                 }]
             }
@@ -74,7 +123,9 @@ module.exports = function(grunt) {
                 jshintrc: 'tests/.jshintrc'
             },
             dist: {
-                src: ['src/js/*.js']
+                src: [
+                    'src/js/*.js'
+                ]
             }
         },
 
@@ -84,17 +135,18 @@ module.exports = function(grunt) {
                 report: 'min'
             },
             dist: {
-                src: ['<%= concat.js.dest %>'],
-                dest: 'dist/js/main.min.js'
+                src: [
+                    '<%= concat.js.dest %>'
+                ],
+                dest: 'dist/js/main.js'
             }
         },
 
         sass: {
             options: {
-                banner: '<%= banner %>',
-                style: 'expanded',
-                compass: true,
-                bundleExec: true
+                // TODO: ['expanded' and 'compact' are not currently supported by libsass]
+                outputStyle: isDevMode ? 'expanded' : 'compressed',
+                sourceMap: isDevMode
             },
             dist: {
                 files: {
@@ -108,54 +160,97 @@ module.exports = function(grunt) {
                 run: true
             },
             dist: {
-                src: ['tests/dist.html']
+                src: [
+                    'tests/dist.html'
+                ]
             }
         },
 
         watch: {
             css: {
-                files: ['src/css/**'],
-                tasks: ['clean:start', 'css', 'clean:end']
+                files: [
+                    'src/css/**'
+                ],
+                tasks: [
+                    'clean:start',
+                    'css',
+                    'clean:end'
+                ]
             },
             js: {
-                files: ['src/js/**'],
-                tasks: ['clean:start', 'js', 'clean:end']
+                files: [
+                    'src/js/**'
+                ],
+                tasks: [
+                    'clean:start',
+                    'js',
+                    'clean:end'
+                ]
             },
             livereload: {
                 options: {
                     livereload: 1337
                 },
-                files: ['dist/css/main.css', 'dist/js/main.js']
+                files: [
+                    'dist/css/main.css',
+                    'dist/js/main.js'
+                ]
             }
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-csslint');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
-    grunt.loadNpmTasks('grunt-contrib-imagemin');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-mocha');
-
     // Testing
-    grunt.registerTask('test-css', ['csslint:dist']);
-    grunt.registerTask('test-js', ['jshint:dist', 'copy:testDist', 'mocha:dist']);
-    grunt.registerTask('test', ['test-css', 'test-js']);
+    grunt.registerTask('test-css', [
+        'csslint:dist'
+    ]);
+    grunt.registerTask('test-js', [
+        'jshint:dist',
+        'copy:testDist',
+        'mocha:dist'
+    ]);
+    grunt.registerTask('test', [
+        'test-css',
+        'test-js'
+    ]);
+
+    cssTask = [
+        'sass:dist',
+        'test-css'
+    ];
+
+    if (!isDevMode) {
+        cssTask.push('cssmin:dist');
+    }
+
+    cssTask.push('header:cssDist');
 
     // CSS
-    grunt.registerTask('css', ['sass:dist', 'test-css', 'cssmin:dist']);
+    grunt.registerTask('css', cssTask);
+
+    jsTask = [
+        'concat:js',
+        'test-js'
+    ];
+
+    if (!isDevMode) {
+        jsTask.push('uglify');
+    }
 
     // JS
-    grunt.registerTask('js', ['concat:js', 'test-js', 'uglify']);
+    grunt.registerTask('js', jsTask);
 
     // Images
-    grunt.registerTask('images', ['imagemin:dist']);
+    grunt.registerTask('images', [
+        'imagemin:dist'
+    ]);
 
     // Default task
-    grunt.registerTask('default', ['clean:start', 'clean:dist', 'css', 'js', 'images', 'clean:end']);
+    grunt.registerTask('default', [
+        'clean:start',
+        'clean:dist',
+        'css',
+        'js',
+        'images',
+        'clean:end'
+    ]);
 };

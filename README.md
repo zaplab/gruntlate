@@ -8,7 +8,6 @@ Basic Grunt Template
 ```
 $ npm install
 $ bower install
-$ bundle install
 ```
 
 ## Usage
@@ -16,4 +15,13 @@ $ bundle install
 ```
 $ grunt
 $ grunt watch
+```
+
+### If we take use of isDevMode inside Gruntfile.js
+
+development (default) or production output (for example css compression on/off):
+
+```
+$ grunt --target=production
+$ grunt --target=prod
 ```

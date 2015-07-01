@@ -1,3 +1,9 @@
 
+dist/css/
+dist/img/
+dist/js/
 node_modules/
 src/libs/bower/
+tests/dist/css/
+tests/dist/img/
+tests/dist/js/
