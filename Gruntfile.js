@@ -11,12 +11,16 @@ module.exports = function(grunt) {
         jsTask;
 
     switch (target) {
-        case 'live':
+        case 'prod':
+            /* falls through */
+        case 'production':
             /* falls through */
         case 'staging':
             isDevMode = false;
             break;
         case 'dev':
+            /* falls through */
+        case 'development':
             /* falls through */
         default:
             isDevMode = true;

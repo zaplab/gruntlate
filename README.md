@@ -19,6 +19,9 @@ $ grunt watch
 
 ### If we take use of isDevMode inside Gruntfile.js
 
+development (default) or production output (for example css compression on/off):
+
 ```
-$ grunt --target=live
+$ grunt --target=production
+$ grunt --target=prod
 ```
