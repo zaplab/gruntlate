@@ -190,7 +190,7 @@ module.exports = function(grunt) {
             dist: {
                 options: {
                     urls: [
-                        'http://localhost:8080/index.html'
+                        'http://localhost:' + testServerPort + '/index.html'
                     ]
                 }
             }
