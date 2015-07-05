@@ -37,6 +37,23 @@ module.exports = function(grunt) {
         ' <%= pkg.description %>\n' +
         '*/',
 
+        browserSync: {
+            dev: {
+                bsFiles: {
+                    src : [
+                        'dist/css/**/*.css',
+                        'dist/img/**',
+                        'dist/js/**/*.js',
+                        'dist/**/*.html'
+                    ]
+                },
+                options: {
+                    watchTask: true,
+                    server: 'dist'
+                }
+            }
+        },
+
         clean: {
             start: [],
             dist: [
@@ -199,15 +216,6 @@ module.exports = function(grunt) {
                     'js',
                     'clean:end'
                 ]
-            },
-            livereload: {
-                options: {
-                    livereload: 1337
-                },
-                files: [
-                    'dist/css/main.css',
-                    'dist/js/main.js'
-                ]
             }
         }
     });
@@ -256,6 +264,11 @@ module.exports = function(grunt) {
     // Images
     grunt.registerTask('images', [
         'imagemin:dist'
+    ]);
+
+    grunt.registerTask('serve', [
+        'browserSync',
+        'watch'
     ]);
 
     // Default task
