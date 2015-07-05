@@ -7,6 +7,7 @@ module.exports = function(grunt) {
 
     var isDevMode,
         target = grunt.option('target'),
+        testServerPort = 8080,
         cssTask,
         jsTask;
 
@@ -57,6 +58,16 @@ module.exports = function(grunt) {
                     'src/js/main.js'
                 ],
                 dest: 'dist/js/main.js'
+            }
+        },
+
+        connect: {
+            testServer: {
+                options: {
+                    hostname: 'localhost',
+                    port: testServerPort,
+                    base: 'tests/'
+                }
             }
         },
 
@@ -160,9 +171,11 @@ module.exports = function(grunt) {
                 run: true
             },
             dist: {
-                src: [
-                    'tests/dist.html'
-                ]
+                options: {
+                    urls: [
+                        'http://localhost:8080/index.html'
+                    ]
+                }
             }
         },
 
@@ -206,6 +219,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test-js', [
         'jshint:dist',
         'copy:testDist',
+        'connect',
         'mocha:dist'
     ]);
     grunt.registerTask('test', [
