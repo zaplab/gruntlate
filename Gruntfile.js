@@ -7,6 +7,7 @@ module.exports = function(grunt) {
 
     var isDevMode,
         target = grunt.option('target'),
+        testServerPort = 8080,
         cssTask,
         jsTask;
 
@@ -36,6 +37,23 @@ module.exports = function(grunt) {
         ' <%= pkg.description %>\n' +
         '*/',
 
+        browserSync: {
+            dev: {
+                bsFiles: {
+                    src : [
+                        'dist/css/**/*.css',
+                        'dist/img/**',
+                        'dist/js/**/*.js',
+                        'dist/**/*.html'
+                    ]
+                },
+                options: {
+                    watchTask: true,
+                    server: 'dist'
+                }
+            }
+        },
+
         clean: {
             start: [],
             dist: [
@@ -57,6 +75,16 @@ module.exports = function(grunt) {
                     'src/js/main.js'
                 ],
                 dest: 'dist/js/main.js'
+            }
+        },
+
+        connect: {
+            testServer: {
+                options: {
+                    hostname: 'localhost',
+                    port: testServerPort,
+                    base: 'tests/'
+                }
             }
         },
 
@@ -82,6 +110,25 @@ module.exports = function(grunt) {
         },
 
         copy: {
+            setupTestsChai: {
+                nonull: true,
+                expand: true,
+                cwd: 'src/libs/bower/chai',
+                src: [
+                    'chai.js'
+                ],
+                dest: 'tests/libs'
+            },
+            setupTestsMocha: {
+                nonull: true,
+                expand: true,
+                cwd: 'src/libs/bower/mocha/',
+                src: [
+                    'mocha.js',
+                    'mocha.css'
+                ],
+                dest: 'tests/libs'
+            },
             testDist: {
                 nonull: true,
                 src: [
@@ -160,9 +207,11 @@ module.exports = function(grunt) {
                 run: true
             },
             dist: {
-                src: [
-                    'tests/dist.html'
-                ]
+                options: {
+                    urls: [
+                        'http://localhost:' + testServerPort + '/index.html'
+                    ]
+                }
             }
         },
 
@@ -186,18 +235,18 @@ module.exports = function(grunt) {
                     'js',
                     'clean:end'
                 ]
-            },
-            livereload: {
-                options: {
-                    livereload: 1337
-                },
-                files: [
-                    'dist/css/main.css',
-                    'dist/js/main.js'
-                ]
             }
         }
     });
+
+    // First setup
+    grunt.registerTask('setup-tests', [
+        'copy:setupTestsChai',
+        'copy:setupTestsMocha'
+    ]);
+    grunt.registerTask('setup', [
+        'setup-tests'
+    ]);
 
     // Testing
     grunt.registerTask('test-css', [
@@ -206,6 +255,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test-js', [
         'jshint:dist',
         'copy:testDist',
+        'connect',
         'mocha:dist'
     ]);
     grunt.registerTask('test', [
@@ -242,6 +292,11 @@ module.exports = function(grunt) {
     // Images
     grunt.registerTask('images', [
         'imagemin:dist'
+    ]);
+
+    grunt.registerTask('serve', [
+        'browserSync',
+        'watch'
     ]);
 
     // Default task

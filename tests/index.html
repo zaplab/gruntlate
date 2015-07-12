@@ -13,6 +13,12 @@
     <script charset="utf-8">mocha.setup('bdd');</script>
     <!-- unit tests -->
     <script src="unit/basic.js" charset="utf-8"></script>
-    <script charset="utf-8">mocha.run();</script>
+    <script charset="utf-8">
+        if (window.mochaPhantomJS) {
+            mochaPhantomJS.run();
+        } else {
+            mocha.run();
+        }
+    </script>
 </body>
 </html>
