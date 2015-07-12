@@ -110,6 +110,25 @@ module.exports = function(grunt) {
         },
 
         copy: {
+            setupTestsChai: {
+                nonull: true,
+                expand: true,
+                cwd: 'src/libs/bower/chai',
+                src: [
+                    'chai.js'
+                ],
+                dest: 'tests/libs'
+            },
+            setupTestsMocha: {
+                nonull: true,
+                expand: true,
+                cwd: 'src/libs/bower/mocha/',
+                src: [
+                    'mocha.js',
+                    'mocha.css'
+                ],
+                dest: 'tests/libs'
+            },
             testDist: {
                 nonull: true,
                 src: [
@@ -219,6 +238,15 @@ module.exports = function(grunt) {
             }
         }
     });
+
+    // First setup
+    grunt.registerTask('setup-tests', [
+        'copy:setupTestsChai',
+        'copy:setupTestsMocha'
+    ]);
+    grunt.registerTask('setup', [
+        'setup-tests'
+    ]);
 
     // Testing
     grunt.registerTask('test-css', [
