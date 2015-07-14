@@ -324,6 +324,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('serve', [
+        'default',
         'browserSync',
         'watch'
     ]);

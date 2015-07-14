@@ -7,14 +7,21 @@ Basic Grunt Template
 
 ```
 $ npm install
-$ bower install
 ```
+
+npm install should call:
+
+```
+$ bower install
+$ grunt setup
+```
+
 
 ## Usage
 
 ```
 $ grunt
-$ grunt watch
+$ grunt serve
 ```
 
 ### If we take use of isDevMode inside Gruntfile.js
