@@ -25,6 +25,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-header": "^1.0.0",
     "grunt-mocha": "^0.4.12",
+    "grunt-modernizr": "^0.6.0",
     "grunt-sass": "^1.0.0",
     "load-grunt-tasks": "^3.2.0",
     "time-grunt": "^1.2.1"

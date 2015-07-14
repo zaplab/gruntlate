@@ -3,4 +3,13 @@ body {
     h1 {
         content: "gruntlate";
     }
+
+    // modernizr example
+    html.csstransforms & {
+        color: #0f0;
+    }
+
+    html.no-csstransforms & {
+        color: #f00;
+    }
 }

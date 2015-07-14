@@ -61,7 +61,9 @@ module.exports = function(grunt) {
                 'dist/img',
                 'dist/js'
             ],
-            end: []
+            end: [
+                'tmp'
+            ]
         },
 
         concat: {
@@ -75,6 +77,12 @@ module.exports = function(grunt) {
                     'src/js/main.js'
                 ],
                 dest: 'dist/js/main.js'
+            },
+            initJs: {
+                src: [
+                    'tmp/js/modernizr.js'
+                ],
+                dest: 'dist/js/init.js'
             }
         },
 
@@ -176,6 +184,21 @@ module.exports = function(grunt) {
             }
         },
 
+        modernizr: {
+            dist: {
+                devFile: 'src/libs/bower/modernizr/modernizr.js',
+                outputFile: 'tmp/js/modernizr.js',
+                uglify: false,
+                extra : {},
+                files: {
+                    src: [
+                        'dist/css/main.css',
+                        'dist/js/main.js'
+                    ]
+                }
+            }
+        },
+
         uglify: {
             options: {
                 preserveComments: 'some',
@@ -223,6 +246,8 @@ module.exports = function(grunt) {
                 tasks: [
                     'clean:start',
                     'css',
+                    'modernizr:dist',
+                    'concat:initJs',
                     'clean:end'
                 ]
             },
@@ -233,6 +258,8 @@ module.exports = function(grunt) {
                 tasks: [
                     'clean:start',
                     'js',
+                    'modernizr:dist',
+                    'concat:initJs',
                     'clean:end'
                 ]
             }
@@ -279,6 +306,8 @@ module.exports = function(grunt) {
 
     jsTask = [
         'concat:js',
+        'modernizr:dist',
+        'concat:initJs',
         'test-js'
     ];
 
