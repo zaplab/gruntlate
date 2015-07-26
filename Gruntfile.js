@@ -1,5 +1,5 @@
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     'use strict';
 
     require('time-grunt')(grunt);
@@ -79,6 +79,9 @@ module.exports = function(grunt) {
                 dest: 'dist/js/main.js'
             },
             initJs: {
+                options: {
+                    banner: ''
+                },
                 src: [
                     'tmp/js/modernizr.js'
                 ],
@@ -189,7 +192,6 @@ module.exports = function(grunt) {
                 devFile: 'src/libs/bower/modernizr/modernizr.js',
                 outputFile: 'tmp/js/modernizr.js',
                 uglify: false,
-                extra : {},
                 files: {
                     src: [
                         'dist/css/main.css',
