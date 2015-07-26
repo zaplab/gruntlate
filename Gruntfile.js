@@ -12,19 +12,13 @@ module.exports = function (grunt) {
         jsTask;
 
     switch (target) {
-        case 'prod':
-            /* falls through */
-        case 'production':
-            /* falls through */
-        case 'staging':
-            isDevMode = false;
-            break;
         case 'dev':
             /* falls through */
         case 'development':
-            /* falls through */
-        default:
             isDevMode = true;
+            break;
+        default:
+            isDevMode = false;
     }
 
     grunt.initConfig({
