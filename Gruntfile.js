@@ -205,6 +205,12 @@ module.exports = function (grunt) {
                     '<%= concat.js.dest %>'
                 ],
                 dest: 'dist/js/main.js'
+            },
+            initJs: {
+                src: [
+                    '<%= concat.initJs.dest %>'
+                ],
+                dest: 'dist/js/init.js'
             }
         },
 
