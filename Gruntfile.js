@@ -1,5 +1,5 @@
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     'use strict';
 
     require('time-grunt')(grunt);
@@ -9,22 +9,17 @@ module.exports = function(grunt) {
         target = grunt.option('target'),
         testServerPort = 8080,
         cssTask,
-        jsTask;
+        jsTask,
+        jsDevTasks;
 
     switch (target) {
-        case 'prod':
-            /* falls through */
-        case 'production':
-            /* falls through */
-        case 'staging':
-            isDevMode = false;
-            break;
         case 'dev':
             /* falls through */
         case 'development':
-            /* falls through */
-        default:
             isDevMode = true;
+            break;
+        default:
+            isDevMode = false;
     }
 
     grunt.initConfig({
@@ -36,6 +31,17 @@ module.exports = function(grunt) {
         ' All rights reserved.\n' +
         ' <%= pkg.description %>\n' +
         '*/',
+
+        babel: {
+            options: {
+                sourceMap: isDevMode
+            },
+            dist: {
+                files: {
+                    'dist/js/main.js': 'tmp/js/main.js'
+                }
+            }
+        },
 
         browserSync: {
             dev: {
@@ -61,7 +67,9 @@ module.exports = function(grunt) {
                 'dist/img',
                 'dist/js'
             ],
-            end: []
+            end: [
+                'tmp'
+            ]
         },
 
         concat: {
@@ -74,7 +82,16 @@ module.exports = function(grunt) {
                 src: [
                     'src/js/main.js'
                 ],
-                dest: 'dist/js/main.js'
+                dest: 'tmp/js/main.js'
+            },
+            initJs: {
+                options: {
+                    banner: ''
+                },
+                src: [
+                    'tmp/js/modernizr.js'
+                ],
+                dest: 'dist/js/init.js'
             }
         },
 
@@ -165,14 +182,26 @@ module.exports = function(grunt) {
             }
         },
 
-        jshint: {
+        eslint: {
             options: {
-                jshintrc: 'tests/.jshintrc'
+                configFile: 'tests/.eslintrc'
             },
+            src: [
+                'src/js/*.js'
+            ]
+        },
+
+        modernizr: {
             dist: {
-                src: [
-                    'src/js/*.js'
-                ]
+                devFile: 'src/libs/bower/modernizr/modernizr.js',
+                outputFile: 'tmp/js/modernizr.js',
+                uglify: false,
+                files: {
+                    src: [
+                        'dist/css/main.css',
+                        'dist/js/main.js'
+                    ]
+                }
             }
         },
 
@@ -186,6 +215,12 @@ module.exports = function(grunt) {
                     '<%= concat.js.dest %>'
                 ],
                 dest: 'dist/js/main.js'
+            },
+            initJs: {
+                src: [
+                    '<%= concat.initJs.dest %>'
+                ],
+                dest: 'dist/js/init.js'
             }
         },
 
@@ -232,7 +267,7 @@ module.exports = function(grunt) {
                 ],
                 tasks: [
                     'clean:start',
-                    'js',
+                    'js:watch',
                     'clean:end'
                 ]
             }
@@ -253,7 +288,7 @@ module.exports = function(grunt) {
         'csslint:dist'
     ]);
     grunt.registerTask('test-js', [
-        'jshint:dist',
+        'eslint:src',
         'copy:testDist',
         'connect',
         'mocha:dist'
@@ -278,8 +313,17 @@ module.exports = function(grunt) {
     grunt.registerTask('css', cssTask);
 
     jsTask = [
+        'concat:initJs',
         'concat:js',
+        'babel:dist',
+        'modernizr:dist',
         'test-js'
+    ];
+
+    jsDevTasks = [
+        'eslint:src',
+        'concat:js',
+        'babel:dist'
     ];
 
     if (!isDevMode) {
@@ -288,6 +332,7 @@ module.exports = function(grunt) {
 
     // JS
     grunt.registerTask('js', jsTask);
+    grunt.registerTask('js:watch', jsDevTasks);
 
     // Images
     grunt.registerTask('images', [
@@ -295,6 +340,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('serve', [
+        'default',
         'browserSync',
         'watch'
     ]);
