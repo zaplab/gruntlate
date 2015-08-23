@@ -1,2 +1,5 @@
 
-console.log('gruntlate');
+// Immediately-Invoked Function Expression
+(function iife() {
+    console.log('gruntlate');
+})();

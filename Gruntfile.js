@@ -31,6 +31,17 @@ module.exports = function (grunt) {
         ' <%= pkg.description %>\n' +
         '*/',
 
+        babel: {
+            options: {
+                sourceMap: isDevMode
+            },
+            dist: {
+                files: {
+                    'dist/js/main.js': 'tmp/js/main.js'
+                }
+            }
+        },
+
         browserSync: {
             dev: {
                 bsFiles: {
@@ -70,7 +81,7 @@ module.exports = function (grunt) {
                 src: [
                     'src/js/main.js'
                 ],
-                dest: 'dist/js/main.js'
+                dest: 'tmp/js/main.js'
             },
             initJs: {
                 options: {
@@ -170,15 +181,13 @@ module.exports = function (grunt) {
             }
         },
 
-        jshint: {
+        eslint: {
             options: {
-                jshintrc: 'tests/.jshintrc'
+                configFile: 'tests/.eslintrc'
             },
-            dist: {
-                src: [
-                    'src/js/*.js'
-                ]
-            }
+            src: [
+                'src/js/*.js'
+            ]
         },
 
         modernizr: {
@@ -278,7 +287,7 @@ module.exports = function (grunt) {
         'csslint:dist'
     ]);
     grunt.registerTask('test-js', [
-        'jshint:dist',
+        'eslint:src',
         'copy:testDist',
         'connect',
         'mocha:dist'
@@ -303,9 +312,10 @@ module.exports = function (grunt) {
     grunt.registerTask('css', cssTask);
 
     jsTask = [
-        'concat:js',
-        'modernizr:dist',
         'concat:initJs',
+        'concat:js',
+        'babel:dist',
+        'modernizr:dist',
         'test-js'
     ];
 
