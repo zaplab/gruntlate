@@ -9,7 +9,8 @@ module.exports = function (grunt) {
         target = grunt.option('target'),
         testServerPort = 8080,
         cssTask,
-        jsTask;
+        jsTask,
+        jsDevTasks;
 
     switch (target) {
         case 'dev':
@@ -266,7 +267,7 @@ module.exports = function (grunt) {
                 ],
                 tasks: [
                     'clean:start',
-                    'js',
+                    'js:watch',
                     'clean:end'
                 ]
             }
@@ -319,12 +320,19 @@ module.exports = function (grunt) {
         'test-js'
     ];
 
+    jsDevTasks = [
+        'eslint:src',
+        'concat:js',
+        'babel:dist'
+    ];
+
     if (!isDevMode) {
         jsTask.push('uglify');
     }
 
     // JS
     grunt.registerTask('js', jsTask);
+    grunt.registerTask('js:watch', jsDevTasks);
 
     // Images
     grunt.registerTask('images', [
