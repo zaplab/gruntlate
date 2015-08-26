@@ -74,7 +74,6 @@ module.exports = function (grunt) {
 
         concat: {
             options: {
-                banner: '<%= banner %>',
                 sourceMap: isDevMode,
                 stripBanners: true
             },
@@ -85,9 +84,6 @@ module.exports = function (grunt) {
                 dest: 'tmp/js/main.js'
             },
             initJs: {
-                options: {
-                    banner: ''
-                },
                 src: [
                     'tmp/js/modernizr.js'
                 ],
@@ -158,10 +154,18 @@ module.exports = function (grunt) {
         header: {
             cssDist: {
                 options: {
-                    text: isDevMode ? '' : '<%= banner %>'
+                    text: '<%= banner %>'
                 },
                 files: {
                     'dist/css/main.css': 'dist/css/main.css'
+                }
+            },
+            jsDist: {
+                options: {
+                    text: '<%= banner %>'
+                },
+                files: {
+                    'dist/js/main.js': 'dist/js/main.js'
                 }
             }
         },
@@ -305,18 +309,17 @@ module.exports = function (grunt) {
 
     if (!isDevMode) {
         cssTask.push('cssmin:dist');
+        cssTask.push('header:cssDist');
     }
-
-    cssTask.push('header:cssDist');
 
     // CSS
     grunt.registerTask('css', cssTask);
 
     jsTask = [
-        'concat:initJs',
         'concat:js',
         'babel:dist',
         'modernizr:dist',
+        'concat:initJs',
         'test-js'
     ];
 
@@ -328,6 +331,7 @@ module.exports = function (grunt) {
 
     if (!isDevMode) {
         jsTask.push('uglify');
+        jsTask.push('header:jsDist');
     }
 
     // JS
