@@ -308,8 +308,8 @@ module.exports = function (grunt) {
     ];
 
     if (!isDevMode) {
-        cssTask.push('cssmin:dist');
         cssTask.push('header:cssDist');
+        cssTask.push('cssmin:dist');
     }
 
     // CSS
@@ -330,8 +330,8 @@ module.exports = function (grunt) {
     ];
 
     if (!isDevMode) {
-        jsTask.push('uglify');
         jsTask.push('header:jsDist');
+        jsTask.push('uglify');
     }
 
     // JS
