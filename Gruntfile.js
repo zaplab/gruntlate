@@ -101,15 +101,13 @@ module.exports = function (grunt) {
             }
         },
 
-        csslint: {
-            dist: {
-                options: {
-                    csslintrc: 'tests/.csslintrc'
-                },
-                src: [
-                    'dist/css/main.css'
-                ]
-            }
+        sasslint: {
+            options: {
+                configFile: 'tests/.sass-lint.yml'
+            },
+            dist: [
+                'src/css/**/*.scss'
+            ]
         },
 
         cssmin: {
@@ -289,7 +287,7 @@ module.exports = function (grunt) {
 
     // Testing
     grunt.registerTask('test-css', [
-        'csslint:dist'
+        'sasslint:dist'
     ]);
     grunt.registerTask('test-js', [
         'eslint:src',
@@ -303,8 +301,8 @@ module.exports = function (grunt) {
     ]);
 
     cssTask = [
-        'sass:dist',
-        'test-css'
+        'test-css',
+        'sass:dist'
     ];
 
     if (!isDevMode) {
